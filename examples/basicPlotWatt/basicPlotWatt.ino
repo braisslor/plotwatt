@@ -86,7 +86,8 @@ void loop() {
 }
 
 void sendBatch() {
-	
+	//1. Connect to plotwatt.com
+	//2. Send initial POST command	-> 
 
 }
 
