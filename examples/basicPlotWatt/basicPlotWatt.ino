@@ -20,8 +20,21 @@
 #include <HttpClient.h>
 #include <EmonLib.h>                   // Include Emon Library
 
-#define APIKEY		**YOUR API KEY GOES HERE***
-#define METERNUMBER	**YOUR METER NUMBER GOES HERE***
+/***************************************
+Your api key is from www.plotwatt.com. 
+1. Go to https://plotwatt.com/docs/api
+2. Your api key is listed there. EX: NTNmYWI5NTZhNjY0
+3. Change prefered language bullet to "Low-level details with Curl examples"
+4. Copy the text string between 'http://' and the '@plotwatt.com/api/v2/new_meters' 
+	- http://NTNmYWI5NTZhNjY0:@plotwatt.com/api/v2/new_meters 
+	- String is: NTNmYWI5NTZhNjY0:
+5. Now go to http://www.base64encode.org/ and paste the string into the 64 bit encoder.
+6. This is the APIKEY64BIT for the listed api key. TlRObVlXSTVOVFpoTmpZMDo=
+ **************************************/
+ 
+#define APIKEY64BIT		**YOUR API KEY GOES HERE***
+#define METERNUMBER1	**YOUR METER NUMBER GOES HERE***
+#define METERNUMBER2	**YOUR METER NUMBER GOES HERE***
 
 #define SIZEOFARRAY 30 //1 Samples per second
 
@@ -86,11 +99,21 @@ void loop() {
 }
 
 void sendBatch() {
+	//1.0 Calculate content-length
 	//1. Connect to plotwatt.com
 	//2. Send initial POST command	-> 
+	
+	/* Example Post command 
+	//POST /api/v2/push_readings HTTP/1.1
+	//Authorization: Basic TlRObVlXSTVOVFpoTmpZMDo=
+	//User-Agent: curl/7.30.0
+	//Host: plotwatt.com
+	//Accept: */*
+	//Content-Length: 46
+	//Content-Type: application/x-www-form-urlencoded
+	
+	//904090,10.5,1399654557,904090,40.45,1399654597
+	
 
 }
-
-
-
     
