@@ -9,6 +9,7 @@
  *   * Arduino software with version >= 1.0
  *   * An account at plotwatt
  *   * This sketch requires the Time library from http://www.pjrc.com/teensy/td_libs_Time.html 
+ *	 * An analog sensor connected to measure current
  *
  * Optional
  *   * An analog sensor connected
