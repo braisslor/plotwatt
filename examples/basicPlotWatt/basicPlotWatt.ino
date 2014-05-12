@@ -42,7 +42,7 @@ Where the page allows you to choose a Meter, that number is your meter number.
  **************************************/
  
 #define APIKEY64BIT		TlRObVlXSTVOVFpoTmpZMDo= 	// YOUR API KEY GOES HERE
-#define METERNUMBER1	904090						// YOUR METER NUMBER GOES HERE
+#define METERNUMBER1	904090						// YOUR METER NUMBER GOES HERE 
 #define METERNUMBER2	904111						// YOUR METER NUMBER GOES HERE
 #define SIZEOFARRAY 30 //1 Samples per second
 
@@ -76,6 +76,7 @@ const unsigned long connectionInterval = 500;      // delay between connecting t
 float voltage = 123.5;
 
 EthernetClient client;
+byte plotWattIP[] = {192, 168, 10, 5};
 float power1[SIZEOFARRAY];
 float power2[SIZEOFARRAY] ;
 unsigned long timeArray1[SIZEOFARRAY];
@@ -125,7 +126,7 @@ void loop() {
   
   if (arrayCounter == SIZEOFARRAY) {
 	arrayCounter = 0;
-	sendBatch(METERNUMBER1, power1, timeArray1, METERNUMBER2, power2, timeArray2);
+	sendBatch(SIZEOFARRAY, (long)METERNUMBER1, power1, timeArray1, (long)METERNUMBER2, power2, timeArray2);
 	arrayCounter = 0;
   
   }  
@@ -133,9 +134,38 @@ void loop() {
 
 }
 
-void sendBatch(int _meterNumber1, float *_power1, unsigned long *_timeArray1, int _meterNumber2, float *_power2, unsigned long *_timeArray2) {
+void sendBatch(const int _SIZEOFARRAY, long _meterNumber1, float *_power1, unsigned long *_timeArray1, long _meterNumber2, float *_power2, unsigned long *_timeArray2) {
+	int length = 0;
 	//1.0 Calculate content-length
-	//1. Connect to plotwatt.com
+	length += calculateLength(_meterNumber1) * _SIZEOFARRAY;
+	length += calculateLength(_power1);
+	length += calculateLength(_timeArray1);
+	length += calculateLength(_meterNumber2) * _SIZEOFARRAY;
+	length += calculateLength(_power2);
+	length += calculateLength(_timeArray2);	
+	length --; //Subtract 1 for the last comma that was counted but not there. 
+	
+	
+	//2. Connect to plotwatt.com
+	Serial.println("connecting...");
+	if (client.connect(plotWattIP,80)) {
+        
+        client.print(POSTFANDATA);
+        readDelay(4); /* wait for a response */  
+		client.print(FANON);
+		readDelay(4); /* wait for a response */
+    
+  } else {
+    Serial.println("F1");
+  }
+  _client.stop();
+  if ( success == 255) {
+		return -1;
+	} else if ( success < 255) {
+	byte tempSuccess = success;
+	success = 255;
+	return tempSuccess;
+	}
 	//2. Send initial POST command	-> 
 	
 	// Example Post command 
@@ -222,4 +252,39 @@ void printDigits(int digits){
   }
     Serial.print(digits);
   
+}
+
+int calculateLength( unsigned long *_object) {
+	int _length = 0;
+	for (arrayCounter = 0; arrayCounter < SIZEOFARRAY; arrayCounter ++ ) {
+		if		( _object[arrayCounter] > 999999999 )	{ _length +=11; }
+		else if	( _object[arrayCounter] > 99999999 )	{ _length +=10; }
+		else if	( _object[arrayCounter] > 9999999 )		{ _length +=9; }
+		else if	( _object[arrayCounter] > 999999 ) 		{ _length +=8; }
+		else if	( _object[arrayCounter] > 99999 ) 		{ _length +=7; }
+		else if	( _object[arrayCounter] > 9999 ) 		{ _length +=6; }
+		else if	( _object[arrayCounter] > 999 )			{ _length +=5; }
+		else if	( _object[arrayCounter] > 99 ) 			{ _length +=4; }
+		else if	( _object[arrayCounter] > 9 ) 			{ _length +=3; }
+		else											{ _length +=2; }			
+	}
+	return _length;
+}
+int calculateLength(long _meter) {
+		if		( _meter > 999999999 )	{ _length +=11; }
+		else if	( _meter > 99999999 )	{ _length +=10; }
+		else if	( _meter > 9999999 )	{ _length +=9; }
+		else if	( _meter > 999999 ) 	{ _length +=8; }
+		else if	( _meter > 99999 ) 		{ _length +=7; }
+		else if	( _meter > 9999 ) 		{ _length +=6; }
+		else if	( _meter > 999 )		{ _length +=5; }
+		else if	( _meter > 99 ) 		{ _length +=4; }
+		else if	( _meter > 9 ) 			{ _length +=3; }
+		else							{ _length +=2; }
+	}
+	return _length;
+}
+
+int calculateLength( float *_object) {
+
 }
