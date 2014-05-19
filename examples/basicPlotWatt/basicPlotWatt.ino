@@ -115,10 +115,18 @@ void loop() {
   double Irms1 = emonA.calcIrms(1480);  // Calculate Irms only
   //power1[arrayCounter] = Irms1 * voltage; //Set apparent power in power1
   power1[arrayCounter] = (float)random(500); //Set apparent power in power1
+<<<<<<< HEAD
   timeArray[arrayCounter] = now();  
   double Irms2 = emonB.calcIrms(1480); //Calculate Irms Only
   //power2[arrayCounter] = Irms2 * voltage;
   power2[arrayCounter] = (float)random(500); //Set apparent power in power1
+=======
+  timeArray1[arrayCounter] = now();  
+  double Irms2 = emonB.calcIrms(1480); //Calculate Irms Only
+  //power2[arrayCounter] = Irms2 * voltage;
+  power2[arrayCounter] = (float)random(500); //Set apparent power in power1
+  timeArray2[arrayCounter] = now();
+>>>>>>> 6f37366bda9a4a533640d6a9fd291813c2bec754
   while((long)power1[arrayCounter] > 50) {
      power1[arrayCounter]/=10.0; 
   }
@@ -128,7 +136,11 @@ void loop() {
   arrayCounter ++;
   
   if (arrayCounter == SIZEOFARRAY) {
+<<<<<<< HEAD
 	myPlot.pushData( timeArray, power1, power2);
+=======
+	myPlot.pushData(power1, timeArray1, power2, timeArray2);
+>>>>>>> 6f37366bda9a4a533640d6a9fd291813c2bec754
 	arrayCounter = 0; 
   }  
   delay(1000);
